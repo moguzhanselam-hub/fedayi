@@ -12,7 +12,8 @@
         header { display: flex; align-items: center; justify-content: center; width: 100%; gap: 5px; margin-top: 10px; }
         .logo-icon { font-size: 2rem; }
         .header-box { background: #ffce00; margin: 0; }
-        header h1 { font-family: 'Bangers', cursive; font-size: 1.6rem; margin: 0; text-transform: uppercase; }
+        header h1 { font-family: 'Bangers', cursive; font-size: 1.6rem; margin: 0; text-transform: uppercase; line-height: 1; }
+        .sub-header { font-size: 0.9rem; font-weight: 900; margin-top: 5px; color: #333; }
         #cart-status { position: fixed; top: 10px; right: 10px; z-index: 1000; background: #ff4757; color: white; padding: 8px 15px; border: 3px solid #000; border-radius: 50px; font-family: 'Bangers'; font-size: 1rem; cursor: pointer; display: none; box-shadow: 4px 4px 0px #000; }
         .container { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; width: 100%; max-width: 1100px; margin-top: 20px; }
         .product-card { width: 155px; padding: 10px; background: #fff; border-radius: 15px 30px; border: 3px solid #000; transition: transform 0.2s; }
@@ -32,7 +33,10 @@
 
     <header>
         <span class="logo-icon">🌳</span>
-        <div class="header-box comic-box"><h1>GEYVE FİDANCILIK</h1></div>
+        <div class="header-box comic-box">
+            <h1>GEYVE FİDANCILIK</h1>
+            <div class="sub-header">Fedayi Özkan Fidancılık</div>
+        </div>
         <span class="logo-icon">🌳</span>
     </header>
 
@@ -51,7 +55,6 @@
     <div id="admin-modal" class="modal"><div class="modal-content"><h3>🛠 Ürün Yönetimi</h3><input type="text" id="p-ad" placeholder="Fidan Adı"><input type="number" id="p-fiyat" placeholder="Fiyat"><input type="file" id="p-dosya" accept="image/*"><button onclick="urunKaydet()" style="background:#2ed573; width:100%; padding:12px; border:3px solid #000; border-radius:10px;">EKLE</button><hr><div id="admin-product-list" style="max-height:150px; overflow-y:auto;"></div><button onclick="modalKapat('admin-modal')" style="margin-top:15px; border:none; color:red;">Kapat</button></div></div>
 
     <script>
-        // Resimlerin klasörden çekilmesi için sabit liste
         const sabitFidanlar = [
             {ad: "Akasya", fiyat: "150", resim: "resimler/Akasya.jpg"},
             {ad: "Ayva", fiyat: "120", resim: "resimler/Ayva.jpg"},
@@ -62,7 +65,6 @@
             {ad: "Kiraz", fiyat: "135", resim: "resimler/Kiraz.jpg"}
         ];
 
-        // Eğer tarayıcıda yeni eklenen ürün varsa onu al, yoksa sabit listeyi kullan
         let fidanlar = JSON.parse(localStorage.getItem('geyve_v18_data')) || sabitFidanlar;
         let sepet = [];
 
@@ -108,9 +110,9 @@
             if(!ad || !tel) return alert("Bilgileri girin!");
             const opt = { margin: 10, filename: `Siparis_${ad}.pdf`, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4' } };
             const temp = document.createElement('div');
-            temp.innerHTML = `<h1>GEYVE FİDANCILIK</h1><p>Müşteri: ${ad}</p><ul>${sepet.map(i => `<li>${i.ad} x ${i.adet}</li>`).join('')}</ul>`;
+            temp.innerHTML = `<h1 style="text-align:center;">GEYVE FİDANCILIK</h1><p><b>Müşteri:</b> ${ad}</p><p><b>Tel:</b> ${tel}</p><hr><ul>${sepet.map(i => `<li>${i.ad} x ${i.adet}</li>`).join('')}</ul>`;
             await html2pdf().set(opt).from(temp).save();
-            window.open(`https://wa.me/905541286254?text=Sipariş verdim, PDF hazır.`, '_blank');
+            window.open(`https://wa.me/905541286254?text=Merhaba, sipariş verdim PDF hazır.`, '_blank');
         }
 
         function urunKaydet() {
@@ -128,7 +130,7 @@
         }
 
         function adminListele() {
-            document.getElementById('admin-product-list').innerHTML = fidanlar.map((f, i) => `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>${f.ad}</span><button onclick="fidanlar.splice(${i},1);localStorage.setItem('geyve_v18_data', JSON.stringify(fidanlar));ciz();" style="color:red;">Sil</button></div>`).join('');
+            document.getElementById('admin-product-list').innerHTML = fidanlar.map((f, i) => `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>${f.ad}</span><button onclick="fidanlar.splice(${i},1);localStorage.setItem('geyve_v18_data', JSON.stringify(fidanlar));ciz();" style="color:white;background:red;border:none;border-radius:5px;padding:2px 8px;cursor:pointer;">Sil</button></div>`).join('');
         }
 
         function adminAc() { if(prompt("Şifre:") === "geyve54") document.getElementById('admin-modal').style.display = 'flex'; }
