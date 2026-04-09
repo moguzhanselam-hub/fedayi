@@ -12,7 +12,7 @@
         header { display: flex; align-items: center; justify-content: center; width: 100%; gap: 5px; margin-top: 10px; }
         .logo-icon { font-size: 2rem; }
         .header-box { background: #ffce00; margin: 0; }
-        header h1 { font-family: 'Bangers', cursive; font-size: 1.6rem; margin: 0; text-transform: uppercase; line-height: 1; }
+        header h1 { font-family: 'Bangers', cursive; font-size: 1.6rem; margin: 0; text-transform: uppercase; line-height: 1.1; }
         .sub-header { font-size: 0.9rem; font-weight: 900; margin-top: 5px; color: #333; }
         #cart-status { position: fixed; top: 10px; right: 10px; z-index: 1000; background: #ff4757; color: white; padding: 8px 15px; border: 3px solid #000; border-radius: 50px; font-family: 'Bangers'; font-size: 1rem; cursor: pointer; display: none; box-shadow: 4px 4px 0px #000; }
         .container { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; width: 100%; max-width: 1100px; margin-top: 20px; }
@@ -24,7 +24,7 @@
         .buy-btn { background: #ffce00; border: 3px solid #000; padding: 8px; font-family: 'Bangers'; font-size: 1rem; cursor: pointer; border-radius: 10px; width: 100%; }
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center; padding: 15px; }
         .modal-content { background: #fff; padding: 25px; width: 100%; max-width: 350px; border: 4px solid #000; border-radius: 30px; text-align: center; }
-        input, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 3px solid #000; border-radius: 12px; }
+        input, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 3px solid #000; border-radius: 12px; font-family: 'Montserrat'; box-sizing: border-box; }
     </style>
 </head>
 <body>
@@ -48,10 +48,21 @@
         <div style="font-size: 0.7rem; margin-top: 10px; background: rgba(255,255,255,0.4); padding: 8px; border-radius: 10px;">DENİZBANK: TR63 0013 4000 0170 2783 0000 01</div>
     </div>
 
-    <button onclick="adminAc()" style="margin:40px 0; opacity:0.3; background:none; border:none; cursor:pointer;">[ Yönetim Paneli ]</button>
+    <button onclick="adminAc()" style="margin:40px 0; opacity:0.1; background:none; border:none; cursor:pointer;">[ Yönetim Paneli ]</button>
 
     <div id="cart-modal" class="modal"><div class="modal-content"><h2 style="font-family:Bangers;">🛒 Sepetiniz</h2><div id="cart-list"></div><h3 id="total-price">0 TL</h3><button onclick="odemeAdiminaGec()" style="background:#2ed573; width:100%; padding:15px; border:3px solid #000; border-radius:12px; font-family:Bangers; font-size:1.3rem;">SİPARİŞ VER</button><br><button onclick="modalKapat('cart-modal')" style="margin-top:15px; border:none; color:red; font-weight:bold;">Kapat</button></div></div>
-    <div id="checkout-modal" class="modal"><div class="modal-content"><h2 style="font-family:Bangers;">📝 Bilgiler</h2><input type="text" id="cust-name" placeholder="Ad Soyad"><input type="tel" id="cust-tel" placeholder="Telefon"><textarea id="cust-address" placeholder="Adres"></textarea><button onclick="siparisOnayla()" id="btn-onay" style="background:#ffce00; width:100%; padding:15px; border:3px solid #000; border-radius:12px; font-family:Bangers;">PDF İNDİR</button></div></div>
+    
+    <div id="checkout-modal" class="modal">
+        <div class="modal-content">
+            <h2 style="font-family:Bangers;">📝 Bilgiler</h2>
+            <input type="text" id="cust-name" placeholder="Ad Soyad">
+            <input type="tel" id="cust-tel" placeholder="Telefon">
+            <textarea id="cust-address" placeholder="Adres"></textarea>
+            <button id="btn-onay" onclick="siparisOnayla()" style="background:#ffce00; width:100%; padding:15px; border:3px solid #000; border-radius:12px; font-family:Bangers; font-size:1.1rem;">PDF OLARAK İNDİR</button>
+            <button onclick="modalKapat('checkout-modal')" style="margin-top:10px; border:none; background:none; color:gray;">Vazgeç</button>
+        </div>
+    </div>
+
     <div id="admin-modal" class="modal"><div class="modal-content"><h3>🛠 Ürün Yönetimi</h3><input type="text" id="p-ad" placeholder="Fidan Adı"><input type="number" id="p-fiyat" placeholder="Fiyat"><input type="file" id="p-dosya" accept="image/*"><button onclick="urunKaydet()" style="background:#2ed573; width:100%; padding:12px; border:3px solid #000; border-radius:10px;">EKLE</button><hr><div id="admin-product-list" style="max-height:150px; overflow-y:auto;"></div><button onclick="modalKapat('admin-modal')" style="margin-top:15px; border:none; color:red;">Kapat</button></div></div>
 
     <script>
@@ -107,12 +118,68 @@
         async function siparisOnayla() {
             const ad = document.getElementById('cust-name').value;
             const tel = document.getElementById('cust-tel').value;
-            if(!ad || !tel) return alert("Bilgileri girin!");
-            const opt = { margin: 10, filename: `Siparis_${ad}.pdf`, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4' } };
+            const adres = document.getElementById('cust-address').value;
+            const btn = document.getElementById('btn-onay');
+
+            if(!ad || !tel) return alert("Lütfen Ad Soyad ve Telefon giriniz!");
+
+            btn.innerText = "HAZIRLANIYOR...";
+            btn.disabled = true;
+
             const temp = document.createElement('div');
-            temp.innerHTML = `<h1 style="text-align:center;">GEYVE FİDANCILIK</h1><p><b>Müşteri:</b> ${ad}</p><p><b>Tel:</b> ${tel}</p><hr><ul>${sepet.map(i => `<li>${i.ad} x ${i.adet}</li>`).join('')}</ul>`;
-            await html2pdf().set(opt).from(temp).save();
-            window.open(`https://wa.me/905541286254?text=Merhaba, sipariş verdim PDF hazır.`, '_blank');
+            temp.style.padding = "40px";
+            temp.style.background = "white";
+            temp.innerHTML = `
+                <div style="font-family: Arial; border: 3px solid black; padding: 20px;">
+                    <h1 style="text-align:center; color: green; margin-bottom:0;">GEYVE FİDANCILIK</h1>
+                    <p style="text-align:center; margin-top:0;">Fedayi Özkan Fidancılık</p>
+                    <hr>
+                    <p><b>Müşteri:</b> ${ad}</p>
+                    <p><b>Telefon:</b> ${tel}</p>
+                    <p><b>Adres:</b> ${adres || 'Belirtilmedi'}</p>
+                    <table style="width:100%; border-collapse: collapse; margin-top:20px;">
+                        <tr style="background: #eee;">
+                            <th style="border:1px solid black; padding:8px; text-align:left;">Ürün</th>
+                            <th style="border:1px solid black; padding:8px;">Adet</th>
+                            <th style="border:1px solid black; padding:8px; text-align:right;">Tutar</th>
+                        </tr>
+                        ${sepet.map(i => `
+                            <tr>
+                                <td style="border:1px solid black; padding:8px;">${i.ad}</td>
+                                <td style="border:1px solid black; padding:8px; text-align:center;">${i.adet}</td>
+                                <td style="border:1px solid black; padding:8px; text-align:right;">${i.fiyat * i.adet} TL</td>
+                            </tr>
+                        `).join('')}
+                    </table>
+                    <h2 style="text-align:right;">${document.getElementById('total-price').innerText}</h2>
+                    <hr>
+                    <div style="background:#fff3f3; padding:15px; border:2px solid red; border-radius:10px; text-align:center; margin-top:30px;">
+                        <p style="color:red; font-weight:bold; margin:0; font-size:14px;">LÜTFEN BU FORMU WHATSAPP (0554 128 62 54) ÜZERİNDEN MUTLAKA GÖNDERİNİZ.</p>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(temp);
+            const opt = { 
+                margin: 10, 
+                filename: `Siparis_${ad}.pdf`, 
+                html2canvas: { scale: 2 }, 
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
+            };
+
+            try {
+                await html2pdf().set(opt).from(temp).save();
+                alert("PDF başarıyla indirildi! Şimdi lütfen bu dosyayı Fedayi Bey'e WhatsApp üzerinden gönderin.");
+                modalKapat('checkout-modal');
+                sepet = []; sepetGuncelle();
+                document.getElementById('cart-status').style.display = 'none';
+            } catch (e) {
+                alert("Bir hata oluştu.");
+            } finally {
+                document.body.removeChild(temp);
+                btn.innerText = "PDF OLARAK İNDİR";
+                btn.disabled = false;
+            }
         }
 
         function urunKaydet() {
@@ -130,7 +197,7 @@
         }
 
         function adminListele() {
-            document.getElementById('admin-product-list').innerHTML = fidanlar.map((f, i) => `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>${f.ad}</span><button onclick="fidanlar.splice(${i},1);localStorage.setItem('geyve_v18_data', JSON.stringify(fidanlar));ciz();" style="color:white;background:red;border:none;border-radius:5px;padding:2px 8px;cursor:pointer;">Sil</button></div>`).join('');
+            document.getElementById('admin-product-list').innerHTML = fidanlar.map((f, i) => `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>${f.ad}</span><button onclick="fidanlar.splice(${i},1);localStorage.setItem('geyve_v18_data', JSON.stringify(fidanlar));ciz();" style="color:white;background:red;border:none;border-radius:5px;padding:2px 8px;">Sil</button></div>`).join('');
         }
 
         function adminAc() { if(prompt("Şifre:") === "geyve54") document.getElementById('admin-modal').style.display = 'flex'; }
