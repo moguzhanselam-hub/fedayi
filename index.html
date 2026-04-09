@@ -7,7 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        /* Tasarım ayarları v15/v18 standartlarındadır */
         body { background-color: #f0f9ff; font-family: 'Montserrat', sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; color: #000; overflow-x: hidden; }
         .comic-box { width: 90%; max-width: 320px; margin: 10px auto; border: 4px solid #000; border-radius: 20px 50px 20px 50px; background: #fff; box-shadow: 6px 6px 0px #000; text-align: center; padding: 15px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; }
         header { display: flex; align-items: center; justify-content: center; width: 100%; gap: 5px; margin-top: 10px; }
@@ -24,7 +23,6 @@
         .buy-btn { background: #ffce00; border: 3px solid #000; padding: 8px; font-family: 'Bangers'; font-size: 1rem; cursor: pointer; border-radius: 10px; width: 100%; }
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center; padding: 15px; }
         .modal-content { background: #fff; padding: 25px; width: 100%; max-width: 350px; border: 4px solid #000; border-radius: 30px; text-align: center; }
-        input, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 3px solid #000; border-radius: 12px; }
     </style>
 </head>
 <body>
@@ -45,28 +43,26 @@
         <div style="font-size: 0.7rem; margin-top: 10px; background: rgba(255,255,255,0.4); padding: 8px; border-radius: 10px;">DENİZBANK: TR63 0013 4000 0170 2783 0000 01</div>
     </div>
 
-    <button onclick="adminAc()" style="margin:40px 0; opacity:0.1; background:none; border:none; cursor:pointer;">[ Yönetim Paneli ]</button>
-
     <script>
-        // ÖNEMLİ: RESİMLER KLASÖRÜNDEKİ DOSYALARLA İSİMLERİ BURADA EŞLİYORUZ
+        // Ürün listesini senin yeni isimlendirmene (Baş harfi büyük) göre güncelledim
         const sabitFidanlar = [
-            {ad: "Akasya", fiyat: "150", resim: "resimler/akasya.jpg"},
+            {ad: "Akasya", fiyat: "150", resim: "resimler/Akasya.jpg"},
             {ad: "Ayva", fiyat: "120", resim: "resimler/Ayva.jpg"},
             {ad: "Can Erik", fiyat: "130", resim: "resimler/Can erik.jpg"},
-            {ad: "Ceviz", fiyat: "140", resim: "resimler/ceviz.jpg"},
-            {ad: "Elma", fiyat: "110", resim: "resimler/elma.jpg"},
-            {ad: "Kayısı", fiyat: "125", resim: "resimler/kayısı.jpg"},
-            {ad: "Kiraz", fiyat: "135", resim: "resimler/kiraz.jpg"}
+            {ad: "Ceviz", fiyat: "140", resim: "resimler/Ceviz.jpg"},
+            {ad: "Elma", fiyat: "110", resim: "resimler/Elma.jpg"},
+            {ad: "Kayısı", fiyat: "125", resim: "resimler/Kayısı.jpg"},
+            {ad: "Kiraz", fiyat: "135", resim: "resimler/Kiraz.jpg"}
         ];
 
-        let fidanlar = JSON.parse(localStorage.getItem('geyve_v18_data')) || sabitFidanlar;
-        let sepet = [];
+        // Önceki hafızayı temizlemek gerekebilir, o yüzden sabit listeyi önceliklendiriyoruz
+        let fidanlar = sabitFidanlar; 
 
         function ciz() {
             const container = document.getElementById('fidan-container');
             container.innerHTML = fidanlar.map((f, index) => `
                 <div class="product-card">
-                    <div class="img-box"><img src="${f.resim}" onerror="this.src='https://via.placeholder.com/150?text=Resim+Yok'"></div>
+                    <div class="img-box"><img src="${f.resim}" onerror="this.src='https://via.placeholder.com/150?text=Resim+Hata'"></div>
                     <div class="product-name">${f.ad}</div>
                     <span class="price">${f.fiyat} TL</span>
                     <button class="buy-btn" onclick="sepeteEkle(${index})">SEPETE EKLE</button>
@@ -82,12 +78,11 @@
             document.getElementById('cart-status').style.display = 'block';
         }
 
+        let sepet = [];
         function sepetGuncelle() {
             let adet = sepet.reduce((a, b) => a + b.adet, 0);
             document.getElementById('cart-count').innerText = adet;
         }
-
-        function adminAc() { if(prompt("Şifre:") === "geyve54") alert("Yönetici modundasınız. Kod üzerinden ürün ekleyebilirsiniz."); }
 
         window.onload = ciz;
     </script>
