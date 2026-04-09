@@ -8,97 +8,97 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         body { background-color: #f0f9ff; font-family: 'Montserrat', sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; color: #000; overflow-x: hidden; }
-        .comic-box { width: 90%; max-width: 320px; margin: 10px auto; border: 4px solid #000; border-radius: 20px 50px 20px 50px; background: #fff; box-shadow: 8px 8px 0 #000; padding: 15px; text-align: center; }
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; width: 100%; max-width: 800px; padding: 10px; }
-        .product-card { background: #fff; border: 3px solid #000; border-radius: 15px; padding: 10px; text-align: center; box-shadow: 5px 5px 0 #000; transition: transform 0.2s; }
-        .product-card img { width: 100%; height: 120px; object-fit: cover; border-radius: 10px; border: 2px solid #000; }
-        .price { display: block; font-weight: 900; color: #16a34a; margin: 5px 0; }
-        button { background: #facc15; border: 2px solid #000; padding: 8px 15px; font-weight: bold; cursor: pointer; border-radius: 10px; box-shadow: 3px 3px 0 #000; }
-        button:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 #000; }
-        #admin-panel { display: none; position: fixed; top: 5%; background: white; border: 5px solid black; padding: 20px; z-index: 1000; width: 90%; max-width: 400px; max-height: 80vh; overflow-y: auto; }
+        .comic-box { width: 90%; max-width: 320px; margin: 10px auto; border: 4px solid #000; border-radius: 20px 50px 20px 50px; background: #fff; box-shadow: 6px 6px 0px #000; padding: 15px; text-align: center; }
+        .container { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; width: 100%; max-width: 1100px; margin-top: 20px; }
+        .product-card { width: 155px; padding: 10px; background: #fff; border-radius: 15px 30px; border: 3px solid #000; }
+        .img-box { width: 100%; height: 110px; overflow: hidden; border: 3px solid #000; border-radius: 10px; margin-bottom: 8px; }
+        .img-box img { width: 100%; height: 100%; object-fit: cover; }
+        .price { font-size: 1.1rem; font-weight: 900; color: #2ed573; -webkit-text-stroke: 0.5px black; }
+        .buy-btn { background: #ffce00; border: 3px solid #000; padding: 8px; font-family: 'Bangers'; font-size: 1rem; cursor: pointer; border-radius: 10px; width: 100%; }
+        #admin-panel { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 10000; color: white; padding: 20px; overflow-y: auto; }
+        input { width: 100%; padding: 10px; margin: 5px 0; border-radius: 10px; border: none; }
+        @media (max-width: 480px) { .product-card { width: 44%; } }
     </style>
 </head>
 <body>
 
-    <div class="comic-box" style="background:#facc15;">
+    <header class="comic-box" style="background:#ffce00;">
         <h1 style="font-family:'Bangers'; margin:0;">GEYVE FİDANCILIK</h1>
+    </header>
+
+    <main id="fidan-container" class="container"></main>
+
+    <div class="comic-box" style="background:#7bed9f;">
+        <strong>Fedayi Özkan</strong><br>
+        📞 0554 128 62 54
     </div>
 
-    <div id="fidan-container" class="product-grid">
-        </div>
-
-    <div class="comic-box" style="background:#86efac; margin-top:30px;">
-        <h3>FEDAYİ ÖZKAN</h3>
-        <p>📞 0554 128 62 54</p>
-        <button onclick="adminAc()">[ Yönetim Paneli ]</button>
-    </div>
+    <button onclick="adminAc()" style="margin:20px; opacity:0.5; background:none; border:none;">[ Yönetim Paneli ]</button>
 
     <div id="admin-panel">
-        <h3>Ürün Ekle</h3>
-        <input type="text" id="p-ad" placeholder="Ürün Adı" style="width:90%; margin-bottom:10px;"><br>
-        <input type="number" id="p-fiyat" placeholder="Fiyat" style="width:90%; margin-bottom:10px;"><br>
-        <input type="text" id="p-resim" placeholder="Resim Linki (Örn: resimler/elma.jpg)" style="width:90%; margin-bottom:10px;"><br>
-        <button onclick="urunEkle()">LİSTEYE EKLE</button>
+        <h2>🛠 Hızlı Ürün Ekle</h2>
+        <input type="text" id="p-ad" placeholder="Fidan Adı">
+        <input type="number" id="p-fiyat" placeholder="Fiyat">
+        <input type="text" id="p-resim" placeholder="Resim Klasörü (Örn: resimler/elma.jpg)">
+        <button onclick="urunEkle()" style="background:#2ed573; width:100%; padding:15px; margin-top:10px; font-weight:bold;">LİSTEYE EKLE</button>
         <hr>
-        <button onclick="yayinla()" style="background:#ef4444; color:white;">🚀 SİTEDE YAYINLA (Kopyala)</button>
-        <button onclick="adminKapat()" style="margin-top:10px;">Kapat</button>
-        <div id="admin-list"></div>
+        <div id="admin-liste"></div>
+        <hr>
+        <button onclick="yayinla()" style="background:#ff4757; width:100%; padding:20px; font-weight:bold; font-size:1.2rem;">🚀 DEĞİŞİKLİKLERİ YAYINLA</button>
+        <button onclick="document.getElementById('admin-panel').style.display='none'" style="width:100%; margin-top:20px; background:#666;">Kapat</button>
     </div>
 
     <script>
-        // ÜRÜNLER BURADA SAKLANIR (Telefonda boş çıkmaması için)
+        // ÜRÜNLER BURADA SABİTLENİR (Hafıza sorunu yaşanmaz)
         let fidanlar = [
-            {ad: "Akasya", fiyat: "1", resim: "resimler/akasya.jpg"},
-            {ad: "Ayva", fiyat: "1", resim: "resimler/Ayva.jpg"},
-            {ad: "Can erik", fiyat: "1", resim: "resimler/Can erik.jpg"}
+            {ad: "Akasya", fiyat: "150", resim: "resimler/akasya.jpg"},
+            {ad: "Ayva", fiyat: "120", resim: "resimler/Ayva.jpg"}
         ];
 
         function ciz() {
             const container = document.getElementById('fidan-container');
-            if (fidanlar.length === 0) {
-                container.innerHTML = "<h3>Henüz ürün eklenmemiş.</h3>";
-                return;
-            }
             container.innerHTML = fidanlar.map((f, i) => `
                 <div class="product-card">
-                    <img src="${f.resim}" onerror="this.src='https://via.placeholder.com/150'">
-                    <h4>${f.ad}</h4>
-                    <span class="price">${f.fiyat} TL</span>
-                    <button onclick="alert('Sipariş için WhatsApp: 0554 128 62 54')">SİPARİŞ</button>
+                    <div class="img-box"><img src="${f.resim}"></div>
+                    <div style="font-size:0.8rem; font-weight:bold; height:30px;">${f.ad}</div>
+                    <div class="price">${f.fiyat} TL</div>
+                    <button class="buy-btn" onclick="alert('Sipariş: 0554 128 62 54')">SİPARİŞ</button>
                 </div>
             `).join('');
+            adminListele();
         }
 
-        function adminAc() { document.getElementById('admin-panel').style.display = 'block'; adminListele(); }
-        function adminKapat() { document.getElementById('admin-panel').style.display = 'none'; }
-
+        function adminAc() { if(prompt("Şifre:") === "geyve54") document.getElementById('admin-panel').style.display='block'; }
+        
         function urunEkle() {
             const ad = document.getElementById('p-ad').value;
             const fiyat = document.getElementById('p-fiyat').value;
             const resim = document.getElementById('p-resim').value;
             if(ad && fiyat) {
                 fidanlar.push({ad, fiyat, resim});
-                adminListele();
                 ciz();
             }
         }
 
         function adminListele() {
-            document.getElementById('admin-list').innerHTML = fidanlar.map((f, i) => `
-                <p>${f.ad} - ${f.fiyat}TL <button onclick="fidanlar.splice(${i},1);adminListele();ciz();">Sil</button></p>
+            document.getElementById('admin-liste').innerHTML = fidanlar.map((f, i) => `
+                <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                    <span>${f.ad}</span>
+                    <button onclick="fidanlar.splice(${i},1);ciz();" style="background:red; color:white; border:none;">Sil</button>
+                </div>
             `).join('');
         }
 
-        // FEDAYİ BEY İÇİN KRİTİK FONKSİYON
+        // FEDAYİ BEY'İN "KISA YOLU"
         function yayinla() {
-            let dosyaIcerigi = document.documentElement.outerHTML;
-            let mevcutVeriSatiri = /let fidanlar = \[[\s\S]*?\];/;
-            let yeniVeriSatiri = `let fidanlar = ${JSON.stringify(fidanlar, null, 12)};`;
-            
-            dosyaIcerigi = dosyaIcerigi.replace(mevcutVeriSatiri, yeniVeriSatiri);
+            let tumKod = document.documentElement.outerHTML;
+            let eskiVeri = /let fidanlar = \[[\s\S]*?\];/;
+            let yeniVeri = `let fidanlar = ${JSON.stringify(fidanlar, null, 12)};`;
+            tumKod = "<!DOCTYPE html>\n" + tumKod.replace(eskiVeri, yeniVeri);
 
-            navigator.clipboard.writeText(dosyaIcerigi).then(() => {
-                alert("SİTE KODU KOPYALANDI!\nŞimdi açılan sayfada eskiyi silip bunu yapıştırın ve kaydedin.");
+            // Kodu kopyala ve GitHub'ı aç
+            navigator.clipboard.writeText(tumKod).then(() => {
+                alert("MÜJDE: Tüm site kodu kopyalandı!\n\nŞimdi GitHub açılacak, oradaki her şeyi silip bunu yapıştırın.");
                 window.open('https://github.com/moguzhanselam-hub/fedayi/edit/main/index.html', '_blank');
             });
         }
